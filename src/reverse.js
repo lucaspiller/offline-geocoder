@@ -17,6 +17,8 @@ function findFeature(latitude, longitude, callback) {
   const query = `SELECT * FROM everything WHERE id IN (
                    SELECT feature_id
                    FROM coordinates
+                   WHERE latitude BETWEEN $lat - 1.5 AND $lat + 1.5
+                   AND longitude BETWEEN $lon - 1.5 AND $lon + 1.5
                    ORDER BY (
                      ($lat - latitude) * ($lat - latitude) +
                        ($lon - longitude) * ($lon - longitude) * $scale
