@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+/* vim: set filetype=javascript: */
+
+"use strict";
+
+const geocoder = require('../src/index.js')
+const args = process.argv.slice(2)
+
+if (args.length != 2) {
+  console.log("usage: geocoder latitude longitude")
+  process.exit(1)
+}
+
+geocoder.reverse(args[0], args[1], function(err, result) {
+  if (err) {
+    console.log(err)
+  } else {
+    console.log(result)
+  }
+})
