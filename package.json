@@ -1,6 +1,6 @@
 {
-  "name": "geocoder",
-  "version": "1.0.0",
+  "name": "offline-geocoder",
+  "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
   "dependencies": {
