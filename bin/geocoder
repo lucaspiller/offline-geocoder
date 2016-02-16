@@ -3,7 +3,7 @@
 
 "use strict";
 
-const geocoder = require('../src/index.js')
+const geocoder = require('../src/index.js')()
 const args = process.argv.slice(2)
 
 if (args.length != 2) {

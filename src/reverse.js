@@ -1,8 +1,5 @@
 "use strict";
 
-const sqlite3 = require('sqlite3').verbose()
-const db = new sqlite3.Database('data/db.sqlite')
-
 // This finds the closest feature based upon Pythagoras's theorem. It is an
 // approximation, and won't provide results as accurate as the haversine
 // formula, but trades that for performance. For our use case this is good
@@ -13,7 +10,7 @@ const db = new sqlite3.Database('data/db.sqlite')
 // different at the poles vs the equator.
 //
 // Based upon http://stackoverflow.com/a/7261601/155715
-function findFeature(latitude, longitude, callback) {
+function findFeature(geocoder, latitude, longitude, callback) {
   const query = `SELECT * FROM everything WHERE id IN (
                    SELECT feature_id
                    FROM coordinates
@@ -28,7 +25,7 @@ function findFeature(latitude, longitude, callback) {
 
   const scale = Math.pow(Math.cos(latitude * Math.PI / 180), 2)
 
-  db.all(query, {
+  geocoder.db.all(query, {
     $lat:   latitude,
     $lon:   longitude,
     $scale: scale
@@ -78,8 +75,8 @@ function formatResult(rows) {
   }
 }
 
-function Reverse(latitude, longitude, callback) {
-  findFeature(latitude, longitude, callback)
+function Reverse(geocoder, latitude, longitude, callback) {
+  findFeature(geocoder, latitude, longitude, callback)
 }
 
 module.exports = Reverse;
