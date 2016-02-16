@@ -11,30 +11,41 @@
 //
 // Based upon http://stackoverflow.com/a/7261601/155715
 function findFeature(geocoder, latitude, longitude, callback) {
-  const query = `SELECT * FROM everything WHERE id IN (
-                   SELECT feature_id
-                   FROM coordinates
-                   WHERE latitude BETWEEN $lat - 1.5 AND $lat + 1.5
-                   AND longitude BETWEEN $lon - 1.5 AND $lon + 1.5
-                   ORDER BY (
-                     ($lat - latitude) * ($lat - latitude) +
-                       ($lon - longitude) * ($lon - longitude) * $scale
-                   ) ASC
-                   LIMIT 1
-                 )`
+  return new Promise(function(resolve, reject) {
+    const query = `SELECT * FROM everything WHERE id IN (
+                     SELECT feature_id
+                     FROM coordinates
+                     WHERE latitude BETWEEN $lat - 1.5 AND $lat + 1.5
+                     AND longitude BETWEEN $lon - 1.5 AND $lon + 1.5
+                     ORDER BY (
+                       ($lat - latitude) * ($lat - latitude) +
+                         ($lon - longitude) * ($lon - longitude) * $scale
+                     ) ASC
+                     LIMIT 1
+                   )`
 
-  const scale = Math.pow(Math.cos(latitude * Math.PI / 180), 2)
+    const scale = Math.pow(Math.cos(latitude * Math.PI / 180), 2)
 
-  geocoder.db.all(query, {
-    $lat:   latitude,
-    $lon:   longitude,
-    $scale: scale
-  }, function(err, rows) {
-    if (err) {
-      callback(err, undefined)
-    } else {
-      callback(undefined, formatResult(rows))
-    }
+    geocoder.db.all(query, {
+      $lat:   latitude,
+      $lon:   longitude,
+      $scale: scale
+    }, function(err, rows) {
+      if (err) {
+        if (typeof(callback) == 'function') {
+          callback(err, undefined)
+        } else if (typeof(reject) == 'function') {
+          reject(err)
+        }
+      } else {
+        const result = formatResult(rows)
+        if (typeof(callback) == 'function') {
+          callback(undefined, result)
+        } else if (typeof(resolve) == 'function') {
+          resolve(result)
+        }
+      }
+    })
   })
 }
 
@@ -76,7 +87,7 @@ function formatResult(rows) {
 }
 
 function Reverse(geocoder, latitude, longitude, callback) {
-  findFeature(geocoder, latitude, longitude, callback)
+  return findFeature(geocoder, latitude, longitude, callback)
 }
 
 module.exports = Reverse;
