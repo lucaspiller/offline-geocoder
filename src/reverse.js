@@ -1,5 +1,7 @@
 "use strict";
 
+const formatLocation = require('./location').format
+
 // This finds the closest feature based upon Pythagoras's theorem. It is an
 // approximation, and won't provide results as accurate as the haversine
 // formula, but trades that for performance. For our use case this is good
@@ -52,37 +54,10 @@ function findFeature(geocoder, latitude, longitude, callback) {
 function formatResult(rows) {
   const row = rows[0]
 
-  if (row.id === undefined) {
+  if (row === undefined) {
     return {}
-  }
-
-  // Construct the formatted name consisting of the name, admin1 name and
-  // country name. Some features don't have an admin1, and others may have the
-  // same name as the feature, so this handles that.
-  let nameParts = []
-  nameParts.push(row.name)
-  if (row.admin1_name && row.admin1_name != row.name) {
-    nameParts.push(row.admin1_name)
-  }
-  nameParts.push(row.country_name)
-  const formattedName = nameParts.join(', ')
-
-  return {
-    id:        row.id,
-    name:      row.name,
-    formatted: formattedName,
-    country: {
-      id:   row.country_id,
-      name: row.country_name
-    },
-    admin1: {
-      id:   row.admin1_id,
-      name: row.admin1_name,
-    },
-    coordinates: {
-      latitude:  row.latitude,
-      longitude: row.longitude
-    }
+  } else {
+    return formatLocation(row)
   }
 }
 
