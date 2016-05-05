@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+/* vim: set filetype=javascript: */
+
+"use strict";
+
+const geocoder = require('../src/index.js')()
+const args = process.argv.slice(2)
+
+if (args.length != 2) {
+  console.log("usage: geocoder latitude longitude")
+  process.exit(1)
+}
+
+var start = Date.now()
+var i = 0;
+
+function cb(err, result) {
+  i++;
+  if (i >= 1000) {
+    const time = Date.now() - start
+    const lookupsPerSecond = 1000 / (time / i)
+    console.log(Math.floor(lookupsPerSecond).toString() + ' lookups per second')
+  } else {
+    geocoder.reverse(args[0], args[1], cb)
+  }
+}
+
+cb()
