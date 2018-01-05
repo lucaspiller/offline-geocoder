@@ -9,6 +9,7 @@ if [ ! -f "$DATA" ]; then
   echo "Downloading cities from Geonames..."
   wget "http://download.geonames.org/export/dump/cities1000.zip"
   unzip "cities1000.zip"
+  rm "cities1000.zip"
 else
   echo "Using existing $DATA"
 fi
@@ -27,17 +28,7 @@ else
   echo "Using existing $COUNTRIES"
 fi
 
-if [ -f "$OUTPUT" ]; then
-  echo
-  echo "The file $OUTPUT already exists."
-  read -p "Do you want to override it? (y/N) " -n 1 -r
-  echo
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit 1
-  fi
-
-  rm "$OUTPUT"
-fi
+rm -f $OUTPUT
 
 echo
 echo "Generating..."
@@ -102,3 +93,9 @@ CREATE INDEX coordinates_lat_lng ON coordinates (latitude, longitude);
 
 COUNT=`sqlite3 "$OUTPUT" "SELECT COUNT(*) FROM features;"`
 echo "Created $OUTPUT with $COUNT features."
+
+echo "Cleaning up..."
+rm features.tsv coordinates.tsv admin1.tsv countries.tsv
+rm $DATA $ADMIN1 $COUNTRIES
+echo "Done"
+
