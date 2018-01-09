@@ -1,12 +1,17 @@
 "use strict";
 
-function find(geocoder, locationId) {
+function find(geocoder, locationId, locationCountryId) {
   return new Promise(function(resolve, reject) {
-    const query = `SELECT * FROM everything WHERE id = $id LIMIT 1`
+    let query, params;
+    if (typeof locationCountryId === 'string') {
+      query = 'SELECT * FROM everything WHERE name = $name AND country_id = $country LIMIT 1';
+      params = {$name: locationId, $country: locationCountryId};
+    } else {
+      query = 'SELECT * FROM everything WHERE id = $id LIMIT 1';
+      params = {$id: locationId};
+    }
 
-    geocoder.db.all(query, {
-      $id: locationId
-    }, function(err, rows) {
+    geocoder.db.all(query, params, function(err, rows) {
       if (err) {
         if (typeof(callback) == 'function') {
           callback(err, undefined)
@@ -50,6 +55,7 @@ function format(result) {
   return {
     id:        result.id,
     name:      result.name,
+    tz:        result.tz,
     formatted: formattedName,
     country: {
       id:   result.country_id,

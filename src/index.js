@@ -31,18 +31,12 @@ function Geocoder(options) {
     return reverse(this, latitude, longitude, callback)
   }
 
-  geocoder.prototype.location = function() {
-    const _this = this
-
-    return {
-      find: function(locationId) {
-        if (!this.db) {
-          return Promise.reject(NO_DB)
-        }
-
-        return findLocation(_this, locationId)
-      }
+  geocoder.prototype.location = function(locationId, locationCountryId) {
+    if (!this.db) {
+      return Promise.reject(NO_DB)
     }
+
+    return findLocation(this, locationId, locationCountryId);
   }
 
   return new geocoder(options)

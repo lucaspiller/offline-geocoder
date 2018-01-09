@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "dependencies": {
-    "sqlite3": "^3.1.1"
+    "sqlite3": "^3.1.13"
   },
   "devDependencies": {},
   "scripts": {

@@ -33,7 +33,7 @@ rm -f $OUTPUT
 echo
 echo "Generating..."
 
-awk 'BEGIN { FS="\t"; OFS=";" } { gsub("\"", "", $2); gsub(";", "", $2); print $1,$2,$9,$11 }' $DATA > features.tsv
+awk 'BEGIN { FS="\t"; OFS=";" } { gsub("\"", "", $2); gsub(";", "", $2); print $1,$2,$9,$11,$18 }' $DATA > features.tsv
 awk 'BEGIN { FS="\t"; OFS=";" } { print $1,$5,$6 }' $DATA > coordinates.tsv
 awk 'BEGIN { FS="\t"; OFS=";" } { split($1, id, "."); gsub("\"", "", $2); gsub(";", "", $2); print id[1],id[2],$2 }' $ADMIN1 > admin1.tsv
 grep -vE '^#' $COUNTRIES | awk 'BEGIN { FS="\t"; OFS=";" } { print $1,$5 }' > countries.tsv
@@ -51,6 +51,7 @@ CREATE TABLE features(
   name TEXT,
   country_id TEXT,
   admin1_id INTEGER,
+  tz TEXT,
   PRIMARY KEY (id)
 );
 
@@ -71,6 +72,7 @@ CREATE VIEW everything AS
   SELECT
     features.id,
     features.name,
+    features.tz,
     admin1.id AS admin1_id,
     admin1.name AS admin1_name,
     countries.id AS country_id,
@@ -89,6 +91,7 @@ CREATE VIEW everything AS
 .import countries.tsv countries
 
 CREATE INDEX coordinates_lat_lng ON coordinates (latitude, longitude);
+CREATE INDEX features_name_country_id ON features (name, country_id);
 ' | sqlite3 "$OUTPUT"
 
 COUNT=`sqlite3 "$OUTPUT" "SELECT COUNT(*) FROM features;"`
