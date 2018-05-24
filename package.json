@@ -1,10 +1,11 @@
 {
   "name": "offline-geocoder",
   "version": "0.0.1",
-  "description": "",
+  "description": "Node library for offline geocoding",
+  "repository": "https://github.com/lucaspiller/offline-geocoder",
   "main": "src/index.js",
   "dependencies": {
-    "sqlite3": "^3.1.1"
+    "sqlite3": "^4.0.0"
   },
   "devDependencies": {},
   "scripts": {
