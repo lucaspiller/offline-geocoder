@@ -54,7 +54,7 @@ function findFeature(geocoder, latitude, longitude, callback) {
 function formatResult(rows) {
   const row = rows[0]
 
-  if (row === undefined) {
+  if (!row || row === undefined) {
     return {}
   } else {
     return formatLocation(row)
