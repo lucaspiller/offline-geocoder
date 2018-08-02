@@ -1,6 +1,6 @@
 {
   "name": "offline-geocoder",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Node library for offline geocoding",
   "repository": "https://github.com/lucaspiller/offline-geocoder",
   "main": "src/index.js",
