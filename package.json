@@ -5,7 +5,7 @@
   "repository": "https://github.com/lucaspiller/offline-geocoder",
   "main": "src/index.js",
   "dependencies": {
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "jasmine": "^3.1.0"
